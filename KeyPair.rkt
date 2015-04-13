@@ -2,6 +2,8 @@
 
 (require plot)
 
+(require racket/include)
+
 ;Key pair object. 
 (define (key-pair keyword procedure)
   (define (dispatch m)
@@ -30,7 +32,10 @@
 
 ;Finds the key-pair object from the given keyword.
 (define (find-key-pair keyword)
-  keyword)
+  (filter (lambda (x)
+            (if (eq? keyword (get-keyword x))
+                #t
+                #f)) key-pair-list))
 
 ;Creates a keyword in the system.
 (define (create-keyword keyword procedure)
@@ -44,5 +49,7 @@
 (define (add-keyword keyword procedure)
   (create-keyword keyword procedure))
 
-(add-keyword 'plot (λ (expression)
-                     (plot (function (λ (x) expression) (- 10) 10 #:label expression))))
+(define (get-definition keyword)
+  (get-procedure (car (find-key-pair keyword))))
+
+(include "KeywordDefinitions.rkt")
