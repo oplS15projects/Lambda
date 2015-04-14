@@ -1,7 +1,13 @@
 
 (require plot)
 
-(add-keyword 'plot (λ (expression)
-                    (plot expression)))
+(define (display-message list-of-stuff)
+  (newline)
+  (for-each (lambda (s) (display s) (display " "))
+            list-of-stuff))
 
-(add-keyword 'test 2)
+(add-keyword 'plot (lambda (x)
+                     (display-message (list "plot" x))))
+
+(add-keyword 'simplify (lambda (x)
+                         (display-message (list "simplify" x))))
