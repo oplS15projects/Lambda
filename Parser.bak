@@ -6,7 +6,9 @@
 (require parser-tools/lex)
 (require (prefix-in : parser-tools/lex-sre))
 
-(include "Evaluator.rkt")
+; Provide all definitions in this file
+(provide (all-defined-out))
+
 
 (define (string->char s)
   (car (string->list s)))
@@ -66,7 +68,6 @@
    [(eof)
     '()]))
 
-
 ;; TO RUN LEXER
 ;; (exp-lexer test-exp1)
 ;; output: '((ID simplify) (ID x) (OP +) (INT 2) (ID x) (OP +) (INT 3))
@@ -123,21 +124,16 @@
     ; e-list has the full, un altered equation
     
     ; Verification print
-    ;(begin 
-    ;(display k-list)
-    ;(newline)
-    ;(display e-list)
-    ;)
+    (begin 
+      (display k-list)
+      (newline)
+      (display e-list)
+      (newline)
+      (display (car e-list))
+      )
     
-    ; Evaluate call to backend
-    ; only call for one keyword for now, pass e-list as string
-    
-    (evaluate 'test (string-append* "" (map (lambda(item)
-                                                     (cond
-                                                       ((number? item) (number->string item))
-                                                       ((symbol? item) (symbol->string item))
-                                                       )
-                                                     ) e-list)))
+    ; Josh
+    ; How would you like to interface this to the backend?
     
     )
   )
@@ -167,6 +163,3 @@
 ;; return e-list
 ;;
 ;; -------------------------------------------------------------------- 
-
-; Provide all definitions in this file
-(provide (all-defined-out))
