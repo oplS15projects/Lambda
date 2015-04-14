@@ -132,7 +132,7 @@
     ; Evaluate call to backend
     ; only call for one keyword for now, pass e-list as string
     
-    (evaluate 'test (string-append* "" (map (lambda(item)
+    (evaluate (car k-list) (string-append* "" (map (lambda(item)
                                                      (cond
                                                        ((number? item) (number->string item))
                                                        ((symbol? item) (symbol->string item))
