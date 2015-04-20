@@ -11,24 +11,11 @@
 (define (string->char s)
   (car (string->list s)))
 
-
+;; Test expressions
 (define test-exp1 (open-input-string "simplify x+2x+3"))
 (define test-exp2 (open-input-string "plot x - 2 * x / 3 ^"))
-(define exp "simplify x+2x+3")
-
-
-; Basic Parser Example
-(define lex-char
-  (lexer
-   ; skip spaces:
-   (#\space     (lex-char input-port))
-   
-   ; skip newline:
-   (#\newline   (lex-char input-port))
-   
-   ; an actual character:
-   (any-char    (list 'CHAR (string->char lexeme)))))
-
+(define exp-simp "simplify x+2x+3")
+(define exp-num (open-input-string "1+2*3"))
 
 ; Modified Calculator Expression Lexer example
 
@@ -72,8 +59,52 @@
 ;; output: '((ID simplify) (ID x) (OP +) (INT 2) (ID x) (OP +) (INT 3))
 ;; lexers take an (open-input-string) port, not a straight up string.
 
+;; ----------------------------Infix->Prefix-------------------------- 
+;; Module from: http://docs.racket-lang.org/guide/hash-reader.html
+;; 
+;; usage: (syntax->datum (read-arith #f expression)) <- expression must be in open-input-string form
+;;
+
+(define (skip-whitespace in)
+  (regexp-match #px"^\\s*" in))
+
+(define (read-arith src in)
+  (define-values (line col pos) (port-next-location in))
+  (define expr-match
+    (regexp-match
+     ; Match an operand followed by any number of 
+     ; operator–operand sequences, and prohibit an
+     ; additional operator from following immediately:
+     #px"^([a-z]|[0-9]+)(?:[-+*/]([a-z]|[0-9]+))*(?![-+*/])"
+     in))
+  
+  (define (to-syntax v delta span-str)
+    (datum->syntax #f v (make-srcloc delta span-str)))
+  (define (make-srcloc delta span-str)
+    (and line
+         (vector src line (+ col delta) (+ pos delta)
+                 (string-length span-str))))
+  
+  (define (parse-expr s delta)
+    (match (or (regexp-match #rx"^(.*?)([+-])(.*)$" s)
+               (regexp-match #rx"^(.*?)([*/])(.*)$" s))
+      [(list _ a-str op-str b-str)
+       (define a-len (string-length a-str))
+       (define a (parse-expr a-str delta))
+       (define b (parse-expr b-str (+ delta 1 a-len)))
+       (define op (to-syntax (string->symbol op-str)
+                             (+ delta a-len) op-str))
+       (to-syntax (list op a b) delta s)]
+      [else (to-syntax (or (string->number s)
+                           (string->symbol s))
+                       delta s)]))
+  
+  (parse-expr (bytes->string/utf-8 (car expr-match)) 0))
 ;; -------------------------------------------------------------------- 
-;; Parser pseudocode
+
+
+;; -------------------------------Parser------------------------------- 
+;; pseudocode
 
 ;; Get input string -> string port
 ;; Lex expression as local list
@@ -94,6 +125,7 @@
         [e-list '() ] ; list for expression
         )
     
+    ;; -- Helper Functions --
     ; Predicate for finding keywords from input expression
     (define (is-keyword? item)
       (and (equal? 'ID (car item)) ( > (string-length (symbol->string (car (cdr item)))) 1))
@@ -107,65 +139,70 @@
              )
       )
     
-    ; Helper function to extract data without tags 
+    ; Predicate for finding variables from equation
+    (define (is-var? item)
+      (equal? 'ID (car item))
+      )
+    
+    ; Extract data without tags 
     (define (rem-tags item)
       (car (cdr item)) ; returns the symbol of the data 
       )
+    
+    ; Convert list with many items to string 
+    (define (e-to-str l1)
+      (string-append* "" (map (lambda(item)
+                                (cond
+                                  ((number? item) (number->string item))
+                                  ((symbol? item) (symbol->string item))
+                                  )
+                                ) l1)))
+    
+    
+    ; --- Parse in-exp ---
     
     ; Filter in-exp for keywords, append all keywords to k-list
     (set! k-list (map rem-tags (filter is-keyword? exp)))
     
     ; Filter in-exp for equation, append equation to e-list
-    (set! e-list (map rem-tags (filter is-equation? exp)))
+    (set! e-list (filter is-equation? exp))
+    
+    ; Test Prints 
+    ;(begin (display k-list)(newline)(display e-list)(newline))  
     
     ; Now input is separated into two lists:
-    ; k-list has only keywords in it
-    ; e-list has the full, un altered equation
+    ; k-list has only keywords in it (no tags)
+    ; e-list has the full, un altered equation (with tags)
+   
     
-    ; Verification print
-    ;(begin 
-    ;(display k-list)
-    ;(newline)
-    ;(display e-list)
-    ;)
+    ;; --- Evaluate call to backend ---
     
-    ; Evaluate call to backend
-    ; only call for one keyword for now, pass e-list as string
+    ; Here we are going to check if the user just wants to evaluate a generic, numbers only math equation
+    (cond
+      ; If k-list is empty and no IDs in equation, append eval to list
+      ((and (empty? k-list) (empty? (filter is-var? e-list))) (set! k-list (list 'eval)))
+      ; If k-list is empty and IDs (variables) in equation, append err and tell backend to return expression (cannot eval with variables)
+      ((and (empty? k-list) (not (empty? (filter is-var? e-list)))) (set! k-list (list 'err)))
+      )
     
-    (evaluate (car k-list) (string-append* "" (map (lambda(item)
-                                                     (cond
-                                                       ((number? item) (number->string item))
-                                                       ((symbol? item) (symbol->string item))
-                                                       )
-                                                     ) e-list)))
+    ; Remove tags from e-list
+    (set! e-list (map rem-tags e-list))
+    
+    ; Test Prints
+    ;(begin (display k-list)(newline)(display e-list)(newline)(display (car k-list)))  
+    
+    ;; Parse to infix here:
+    (if (equal? (car k-list) 'eval)
+        (set! e-list (syntax->datum (read-arith #f (open-input-string (e-to-str e-list)))))
+        (set! e-list (e-to-str e-list))
+        )
+    
+    ; --- Call Backend with k-list and e-list ---
+    ; only calls with one keyword for now, passes e-list as string
+    (evaluate (car k-list) e-list)
     
     )
   )
-
-
-;; Decided that infix -> prefix should be separate from the main keyword parser, since passing to plot and
-;; other functions, we wont want it in racket format. Maybe we should add keyword "evaluate" or if there is no
-;; keyword, we will just infix -> prefix and try to compute the function. If the function fails, we just return the
-;; original expression as an output or "error evaluating"
-
-;; Gunnaa beee funnn too writee thisssss
-
-;; -------------------------------------------------------------------- 
-;; Infix --> Prefix pseudocode
-;;
-;; Filter human expression and build Racket expression (e-list)
-;;  
-;;  (if ID & length < 1) (variable: add variable to e-list)
-;;  (if INT) (number: add number to e-list)
-;;
-;;  Human expression is in infix, convert to prefix
-;;  (if OP)
-;;        (if op is same as previous (current op after l-paren), dont add)
-;;        (else op is new, add left paren and op before last id/num, inc p-cnt))
-;;  (add p-count right parens to e-list)
-;;
-;; return e-list
-;;
 ;; -------------------------------------------------------------------- 
 
 ; Provide all definitions in this file
