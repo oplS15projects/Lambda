@@ -14,8 +14,8 @@
 ;,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ;main frame for Goat Lambda (λ)
 (define frameG (new frame% [label "Goat Lambda (λ)"]
-                    [width 500]
-                    [height 500]
+                    [width 600]
+                    [height 600]
                     [stretchable-height #t]
                     [stretchable-width #t]
                     (x 400) ( y 100)))
@@ -30,9 +30,12 @@
                           ;(init-value "Expression")
                           ;this should return the current text of the editor
                           (callback (λ (input-window event)
-                                      (send event get-event-type)
+                                     ; (send input-window get-text) ;this should work ??                                      
+                                      ;(send frameG on-traverse-char #f)
+                                      (send input-window get-editor)
+                                      ;(send input-window erase)
                                       ; (send event get-text)
-                                      ;(send event get-text)
+                                      
                                       ))
                           ))
 ;,,,,,,,,,,,,,,,,,,,OutPut Text Filed from Input,,,,,,,,,,,,,,,,,,,,
@@ -41,7 +44,8 @@
                      [min-height 30]
                      (parent frameG)
                      (callback (λ ( out-put text-field )
-                                 (send  (send text-field get-editor) get-text )))))
+                                 (send  (send input-window get-editor) get-text )
+                                 ))))
 ;,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ;(define out-put2 (new text-field%
 ;                     [label "UserInPut2"]
@@ -77,9 +81,12 @@
 ;,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,>>>
 ;,,,,,,,,,,,,,,,,,,,,, The graph display canvas,,,,,,,,,,,,,,,,
 
-(define graph-display (new editor-canvas% [parent frameG]))
+(define graph-display (new editor-canvas% 
+                           [parent frameG]
+                           [min-width 400]
+                           [min-height 500]))
 (define pb (new pasteboard%)) ;from joshua
-(define t (new text%)) ;from joshua
+;(define t (new text%)) ;from joshua
 (send graph-display set-editor pb) ;from joshua
 
 ;,,,,,,,,,,,,,,,,,,,,,Vertical Panel,,,,,,,,,,,,,,,,,,,,,,,,
