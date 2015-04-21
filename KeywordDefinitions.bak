@@ -15,7 +15,7 @@
                          (display-message (list "simplify" x))))
 
 (add-keyword 'eval (lambda (x)
-                         (display-message (list "evaluated to:" (eval (infix->prefix x) ens)))))
+                         (display-message (list "evaluated to:" (eval x ens)))))
 
 (add-keyword 'err (lambda (x)
                          (display-message (list "cannot evaluate:" x))))

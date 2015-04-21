@@ -16,7 +16,6 @@
 (define test-exp2 (open-input-string "plot x - 2 * x / 3 ^"))
 (define exp-simp "simplify x+2x+3")
 (define exp-num (open-input-string "1+2*3"))
-(define test-eval "1+2*3")
 
 ; Modified Calculator Expression Lexer example
 
@@ -101,11 +100,6 @@
                        delta s)]))
   
   (parse-expr (bytes->string/utf-8 (car expr-match)) 0))
-
-;; Function to convert a string infix equation to a list prefix equation
-(define (infix->prefix str)
-  (syntax->datum (read-arith #f (open-input-string str))))
-
 ;; -------------------------------------------------------------------- 
 
 
@@ -196,16 +190,20 @@
     
     ; Test Prints
     ;(begin (display k-list)(newline)(display e-list)(newline)(display (car k-list)))  
-   
+    
+    ;; Parse to infix here:
+    (if (equal? (car k-list) 'eval)
+        (set! e-list (syntax->datum (read-arith #f (open-input-string (e-to-str e-list)))))
+        (set! e-list (e-to-str e-list))
+        )
+    
     ; --- Call Backend with k-list and e-list ---
     ; only calls with one keyword for now, passes e-list as string
-    (evaluate (car k-list) (e-to-str e-list))
+    (evaluate (car k-list) e-list)
     
     )
   )
 ;; -------------------------------------------------------------------- 
-
-(define test (syntax->datum (read-arith #f (open-input-string "1+2*x" ))))
 
 ; Provide all definitions in this file
 (provide (all-defined-out))
