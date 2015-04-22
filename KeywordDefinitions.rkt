@@ -15,7 +15,7 @@
                          (display-message (list "simplify" (infix->prefix x)))))
 
 (add-keyword 'eval (lambda (x)
-                     (string-append "evaluated to: " (number->string (eval (infix->prefix x) ens)))))
+                     (string-append "evaluated to: " (number->string (eval `(let ([^ expt]), (infix->prefix x)) ens)))))
 
 (add-keyword 'err (lambda (x)
                     (string-append "cannot evaluate: " x)))
