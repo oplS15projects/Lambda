@@ -1,5 +1,3 @@
-#lang racket
-
 ; Code taken/altered from http://matt.might.net/articles/lexers-in-racket/ to get us started/get ideas
 
 ; Get parser tools from Racket
@@ -17,6 +15,7 @@
 (define exp-simp "simplify x+2x+3")
 (define exp-num (open-input-string "1+2*3"))
 (define test-eval "1+2*3")
+(define exp-parse '())
 
 ; Modified Calculator Expression Lexer example
 
@@ -33,11 +32,11 @@
           (exp-lexer input-port))]
    
    [#\( 
-    (cons '(LPAR)
+    (cons `(LPAR ,(string->symbol lexeme))
           (exp-lexer input-port))]
    
    [#\)
-    (cons '(RPAR) 
+    (cons `(RPAR ,(string->symbol lexeme))
           (exp-lexer input-port))]
    
    [(:: (:? #\-) (:+ (char-range #\0 #\9)))
@@ -76,7 +75,7 @@
      ; Match an operand followed by any number of 
      ; operator–operand sequences, and prohibit an
      ; additional operator from following immediately:
-     #px"^([a-z]|[0-9]+)(?:[-+*/]([a-z]|[0-9]+))*(?![-+*/])"
+     #px"^([a-z]|[0-9]+)(?:[-+*/^]([a-z]|[0-9]+))*(?![-+*/^])"
      in))
   
   (define (to-syntax v delta span-str)
@@ -88,7 +87,8 @@
   
   (define (parse-expr s delta)
     (match (or (regexp-match #rx"^(.*?)([+-])(.*)$" s)
-               (regexp-match #rx"^(.*?)([*/])(.*)$" s))
+               (regexp-match #rx"^(.*?)([*/])(.*)$" s)
+               (regexp-match #rx"^(.*?)(\\^)(.*)$" s))
       [(list _ a-str op-str b-str)
        (define a-len (string-length a-str))
        (define a (parse-expr a-str delta))
@@ -141,6 +141,8 @@
     (define (is-equation? item)
       (or    (equal? 'OP (car item)) ; OP - operation
              (equal? 'INT (car item)) ; INT - numbers
+             ;(equal? 'LPAR (car item)) ; LPAR - Left Paren
+             ;(equal? 'RPAR (car item)) ; RPAR - Right Paren
              (and (equal? 'ID (car item)) ( = (string-length (symbol->string (car (cdr item)))) 1)) ; ID - variables
              )
       )
@@ -148,6 +150,27 @@
     ; Predicate for finding variables from equation
     (define (is-var? item)
       (equal? 'ID (car item))
+      )
+    
+    ; Function to add * operator to variable coefficients
+    (define (add-mult l1)
+      (define (iter in out)
+        
+        (cond 
+          ; If in list is empty
+          ((empty? (cdr in)) (append out (list (car in))))
+          
+          ; If current item is a coefficient and next item is a variable, insert *
+          ((and 
+            (equal? 'INT (car (car in))) 
+            (equal? 'ID (car (car (cdr in)))))  (iter (cdr in) (append out (list (car in)) (list (list 'OP  '*)))) )
+          
+          ; Otherwise continue normally
+          (else (iter (cdr in) (append out (list (car in)))) )
+          )
+        )
+      
+      (iter l1 '())
       )
     
     ; Extract data without tags 
@@ -171,7 +194,10 @@
     (set! k-list (map rem-tags (filter is-keyword? exp)))
     
     ; Filter in-exp for equation, append equation to e-list
-    (set! e-list (filter is-equation? exp))
+    (set! e-list (add-mult (filter is-equation? exp)))
+    
+    ;(set! exp-parse (filter is-equation? exp))
+    ;(set! exp-parse (add-mult exp-parse))
     
     ; Test Prints 
     ;(begin (display k-list)(newline)(display e-list)(newline))  
@@ -179,7 +205,7 @@
     ; Now input is separated into two lists:
     ; k-list has only keywords in it (no tags)
     ; e-list has the full, un altered equation (with tags)
-   
+    
     
     ;; --- Evaluate call to backend ---
     
@@ -195,8 +221,8 @@
     (set! e-list (map rem-tags e-list))
     
     ; Test Prints
-    ;(begin (display k-list)(newline)(display e-list)(newline)(display (car k-list)))  
-   
+    (begin (display k-list)(newline)(display e-list)(newline)(display (car k-list)))  
+    
     ; --- Call Backend with k-list and e-list ---
     ; only calls with one keyword for now, passes e-list as string
     (evaluate (car k-list) (e-to-str e-list))
@@ -205,7 +231,12 @@
   )
 ;; -------------------------------------------------------------------- 
 
-(define test (syntax->datum (read-arith #f (open-input-string "1+2*x" ))))
+(plot-new-window? #t)
+
+;(plot (function (lambda(x) x) ) #:x-min -10 #:x-max 10 #:y-min -10 #:y-max 10)
+
+;(plot (function (lambda(x) (eval (+ 1 x) ens)) ) #:x-min -10 #:x-max 10 #:y-min -10 #:y-max 10)
+
 
 ; Provide all definitions in this file
 (provide (all-defined-out))
