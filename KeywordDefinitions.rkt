@@ -25,7 +25,7 @@
                      (define (help-plot in) 
                        (begin 
                          (set! var in )
-                         (eval `(let ([x var]), (infix->prefix x1)) ns)
+                         (eval `(let ([x var] [^ expt]), (infix->prefix x1)) ns)
                          )
                        ) 
                      
