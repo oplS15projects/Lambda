@@ -9,8 +9,6 @@
 (define (string->char s)
   (car (string->list s)))
 
-(define (^ b e) (expt b e))
-
 ;; Test expressions
 (define test-exp1 (open-input-string "simplify x+2x+3"))
 (define test-exp2 (open-input-string "plot x - 2 * x / 3 ^"))

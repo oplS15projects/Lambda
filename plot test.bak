@@ -1,0 +1,45 @@
+#lang racket
+
+(require plot)
+(include "Parser.rkt")
+
+(define-namespace-anchor anch)
+
+(define l1 (list + 2 'x))
+(define l2 (infix->prefix "x*x"))
+
+
+;(define x 3)
+
+;(define x x)
+;(define 'x x)
+
+;(plot (function (lambda  (var) 
+;                 (eval `(let ([x var])
+;                        , '(+ 2 x) ) ens))) #:x-min -10 #:x-max 10 #:y-min -10 #:y-max 10 )
+
+;(define (a in)
+
+;(eval l2 ens)
+
+(define (a x1)
+  
+  (define ens (namespace-anchor->namespace anch))
+  (define x 3)
+  
+  (eval l2 ens))
+
+
+(define (b x1)
+  (let ([x x1]) x))
+
+;(plot (function (lambda(var)
+;                 (eval `(let ([x var]), l2) ens)) -10 10)) 
+
+; )
+
+;(a '(* x x))
+
+;(define (test var) (eval `(let ([x var]), '(+ x 4)) ens))
+
+;(define (a x) (list + 2 x))

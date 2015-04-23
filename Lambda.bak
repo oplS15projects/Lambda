@@ -73,11 +73,43 @@
                                         )
                                       ))))
 
+;,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+#|(define out-put2 (new text-field%
+                     [label "Output"]
+                     (parent frameG)
+                     (callback (λ ( out-put event)
+                                  ;; Make the editor have a maximum width:
+                                 (send  (send out-put2 get-editor) auto-wrap #f)
+                                  ;; Keep the caret visible:
+                                 (send (send out-put2 get-editor ) set-padding 0 0 2 0)
+                                  ;; Right-align the first paragraph:
+                                 (send (send out-put2 get-editor) set-paragraph-alignment 500 'right)))))
+|#
+;,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-;; Basic label to display instructions under in/output fields
+;;basic label to display on top of Compute Button....
 (define msgG (new message% [parent frameG]
                   [label "Press Enter to compute your input"]))
-   
+
+;; Button to be clicked to triger an event.
+;it creates this on REP : (object:button% ...)
+#|(new button% [parent frameG]
+     [label "Compute"]
+     [callback (λ (button event)
+                 (send msgG set-label "Graphical Output")
+                 ;(send text-field get-text)
+                 (send pb set-dragable #f)
+                 (send pb erase)
+                 
+                 )])
+                 
+|#                
+;(send pb insert (plot3d-snip
+;                (surface3d (λ
+;                              (x y) (* 1 (sin x)))
+;                         (- 10) 10 (- 10) 10)
+;             #:title "sin(x)"
+;            #:x-label "x" #:y-label "y" #:z-label "sin(x)") 0 0))])
 ;,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,>>>
 ;,,,,,,,,,,,,,,,,,,,,, The graph display canvas,,,,,,,,,,,,,,,,
 
@@ -85,9 +117,9 @@
                            [parent frameG]
                            [min-width 400]
                            [min-height 500]))
-
-(define pb (new pasteboard%))
-(send graph-display set-editor pb) 
+(define pb (new pasteboard%)) ;from joshua
+;(define t (new text%)) ;from joshua
+(send graph-display set-editor pb) ;from joshua
 
 ;,,,,,,,,,,,,,,,,,,,,,Vertical Panel,,,,,,,,,,,,,,,,,,,,,,,,
 (define main-panel (new vertical-panel% 
@@ -104,5 +136,5 @@
 
 
 
-;; Show Lambda,,,,,,,,
+;;show Goat Lambda,,,,,,,,
 (send frameG show #t)
