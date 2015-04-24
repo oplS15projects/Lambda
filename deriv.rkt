@@ -1,5 +1,5 @@
 #lang racket
-;infix derivative.
+;Prefix derivative.
 
 ;; Exercise 2.57 on pp. 151.
 ;; Extend the differentiator to handle sums and products of length 2+.
@@ -159,6 +159,8 @@
 (run-tests deriv-testing)
 ;;more test 
 (make-sum 'x 3) ; '(+ x 3)
+(make-sum -8 3) ; -5   sum can also handle subtraction
+(make-sum 'x -3) ; '(+ x -3) sum can also handle subtraction
 (sum? (make-sum 'x 3)) ;#t
 (addend (make-sum 'x 3)) ; 'x
 (augend (make-sum 'x 3)) ;3
