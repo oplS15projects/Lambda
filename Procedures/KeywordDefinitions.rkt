@@ -1,5 +1,5 @@
-
-(require plot)
+(include "Derivative.rkt")
+;(include "Simplify.rkt")
 
 (define-namespace-anchor anch)
 (define ns (namespace-anchor->namespace anch))
@@ -15,7 +15,7 @@
                          (display-message (list "simplify" (infix->prefix x)))))
 
 (add-keyword 'eval (lambda (x)
-                     (string-append "evaluated to: " (number->string (eval `(let ([^ expt]), (infix->prefix x)) ens)))))
+                     (string-append "evaluated to: " (number->string (eval `(let ([^ expt]), (infix->prefix x)) ns)))))
 
 (add-keyword 'err (lambda (x)
                     (string-append "cannot evaluate: " x)))
@@ -36,3 +36,10 @@
                        ; Return Equation
                        (string-append "plotted: " x1)
                        )))
+
+(add-keyword 'deriv (lambda (x)
+                      (string-append "derivative: " (if (number? (deriv (infix->prefix x) 'x))
+                                                        (number->string (deriv (infix->prefix x) 'x))
+                                                        (lst-to-str (deriv (infix->prefix x) 'x))
+                                                        ))
+                      ))

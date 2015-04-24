@@ -1,8 +1,3 @@
-
-(require plot)
-
-(require racket/include)
-
 ;Key pair object. 
 (define (key-pair keyword procedure)
   (define (dispatch m)
@@ -51,4 +46,4 @@
 (define (get-definition keyword)
   (get-procedure (car (find-key-pair keyword))))
 
-(include "KeywordDefinitions.rkt")
+(include "../Procedures/KeywordDefinitions.rkt")
