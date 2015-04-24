@@ -1,8 +1,10 @@
 #lang racket
-;Prefix derivative.
-
+;; Prefix derivative.
+;; Norman Mutunga
+;; OPL project 2015
 ;; Exercise 2.57 on pp. 151.
 ;; Extend the differentiator to handle sums and products of length 2+.
+;; Can also handle subtraction (+ -2  6)  and divition (/ 12 6 )
 
 ;; Don't remove the equation1 definition.
 (define equation1 '(* x y (+ x 3)))  ; i.e., ((x^2)y + 3xy) dx
@@ -62,13 +64,32 @@
 ;; something different the length=1 case and length is 2+ case. 
 (define (augend s)
  (apply make-sum (cddr s)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Divid::::::::::::::::::::::::::::::::::::::::::::::
+(define (make-div d1 . augend)
+  (cond ((= 0 (length augend )) d1 )
+        ((= 1 (length augend))
+         (let (( d2 (car augend )))
+           (cond ((=number? d1 0 ) d2)
+                 ((=number? d2 0 ) d1 ) 
+                 (( and (number? d1 )(number? d2 )) (/ d1 d2 ))
+                 ;(else (list a1 a2 '+  ))))) ;ok postfix out put two errors
+                 ;(else (list a1 '+ a2 ))))) ;ok infix out put
+                 (else (or(list '/ d1 d2 ) (list d1 '/ d2 ))))));ok Prefix output
+         (else 
+          (append (list '/ d1 ) augend ))))
 
-;(define (remove-same list)
-;  (if (null? list)
-;      list
-;      (if (variable? (car list))
-;          (cons (car list) (remove-same (filter (λ (x) (not(same-variable? x (car list)))) (cdr list))))
-;          (cons (car list) (remove-same (cdr list))))))
+(define (div? x)
+  (and (pair? x) (or(eq? (car x) '/) (eq? (cadr x) '/)))) ;ok
+
+(define (addend-div s) (or(cadr s) (car s ))) ;ok
+
+;; you're allowed to have augend also be a constructor
+;; you will need to test for the length of the augend, and do
+;; something different the length=1 case and length is 2+ case. 
+(define (augend-div s)
+ (apply make-div (cddr s)))
+
+;:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 ;; like make-sum, this should work with 1, 2, or 3+ args
 ;; and perform reductions on 1 and 2 arg cases
@@ -119,6 +140,11 @@
 	((sum? exp)
 	 (make-sum (deriv (addend exp) var)
 		   (deriv (augend exp) var)))
+   ;;;;;;;;;;;;;;;;;;;;;;;;     ;,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+        ((div? exp)
+	 (make-div (deriv (addend-div exp) var)
+		   (deriv (augend-div exp) var)))
+    ;;;;;;;;;;;;;;;;;;;;;;;    ;,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 	((product? exp)
 	 (make-sum 
 	  (make-product (multiplier exp)
@@ -159,8 +185,13 @@
 (run-tests deriv-testing)
 ;;more test 
 (make-sum 'x 3) ; '(+ x 3)
-(make-sum -8 3) ; -5   sum can also handle subtraction
-(make-sum 'x -3) ; '(+ x -3) sum can also handle subtraction
+(make-sum -8 3) ; -5
+(make-sum 'x -3) ; '(+ x -3)
+(make-div 9 3) ;3
+(make-div 9 'x) ; '(/ 9 x)
+(make-div 3 9) ; 1/3
+(addend-div (make-div 'x 3 )) ;'x
+(augend-div (make-div 'x 3 )) ;3
 (sum? (make-sum 'x 3)) ;#t
 (addend (make-sum 'x 3)) ; 'x
 (augend (make-sum 'x 3)) ;3
@@ -178,6 +209,7 @@
 ;(deriv '((x ** 3) + (x ** 2)) 'x)   ; '((3 * (x ** 2)) + (2 * x))
 (make-product 'x 3) ;'(* x 3)
 (make-product 1 2) ;2
+(make-product 3 2) ;6
 (make-product 'x 1) ; 'x
 (make-product 1 'x) ; 'x
 (make-product 'x) ; 'x
