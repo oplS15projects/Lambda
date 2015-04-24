@@ -108,6 +108,14 @@
 
 ;; -------------------------------------------------------------------- 
 
+; Convert list with many items to string 
+(define (lst-to-str l1)
+  (string-append* "" (map (lambda(item)
+                            (cond
+                              ((number? item) (number->string item))
+                              ((symbol? item) (symbol->string item))
+                              )
+                            ) l1)))
 
 ;; -------------------------------Parser------------------------------- 
 ;; pseudocode
@@ -178,15 +186,6 @@
       (car (cdr item)) ; returns the symbol of the data 
       )
     
-    ; Convert list with many items to string 
-    (define (e-to-str l1)
-      (string-append* "" (map (lambda(item)
-                                (cond
-                                  ((number? item) (number->string item))
-                                  ((symbol? item) (symbol->string item))
-                                  )
-                                ) l1)))
-    
     
     ; --- Parse in-exp ---
     
@@ -221,21 +220,15 @@
     (set! e-list (map rem-tags e-list))
     
     ; Test Prints
-    (begin (display k-list)(newline)(display e-list)(newline)(display (car k-list)))  
+    ;(begin (display k-list)(newline)(display e-list)(newline)(display (car k-list)))  
     
     ; --- Call Backend with k-list and e-list ---
     ; only calls with one keyword for now, passes e-list as string
-    (evaluate (car k-list) (e-to-str e-list))
+    (evaluate (car k-list) (lst-to-str e-list))
     
     )
   )
 ;; -------------------------------------------------------------------- 
-
-(plot-new-window? #t)
-
-;(plot (function (lambda(x) x) ) #:x-min -10 #:x-max 10 #:y-min -10 #:y-max 10)
-
-;(plot (function (lambda(x) (eval (+ 1 x) ens)) ) #:x-min -10 #:x-max 10 #:y-min -10 #:y-max 10)
 
 
 ; Provide all definitions in this file

@@ -12,7 +12,8 @@
 
 (require racket/gui/base)
 (require plot)
-(include "Parser.rkt")
+(require racket/include)
+(include "Backend/Parser.rkt")
 
 ;A nice way to include /Import procedures
 ;(require rackunit
@@ -46,6 +47,8 @@
                                        ; If a user hits enter to compute an equation
                                        ((equal? (send event get-event-type) 'text-field-enter) 
                                         (begin
+                                          ; Clear canvas
+                                          (send pb erase)
                                           ; Set outputString to solved equation
                                           (set! outputString (main-parser (send input-field get-value)))
                                           ;(set! outputString (send input-field get-value))

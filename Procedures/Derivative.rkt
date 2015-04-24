@@ -1,17 +1,10 @@
-#lang racket
-;infix derivative.
+;; Code for Prefix Derivative function of Lambda
 
-;; Exercise 2.57 on pp. 151.
-;; Extend the differentiator to handle sums and products of length 2+.
+;; Exercise 2.57 on pp. 151 of SICP, the differentiator.
 
 ;; Don't remove the equation1 definition.
 (define equation1 '(* x y (+ x 3)))  ; i.e., ((x^2)y + 3xy) dx
 
-;; You will need to change the following procedures:
-;; make-sum
-;; augend
-;; make-product
-;; multiplicand
 
 (define (variable? x) (symbol? x))
 
@@ -133,6 +126,8 @@
 	(else
 	 (error "unknown expression type -- DERIV" exp))))
 
+#| Tests for Deriv
+
 ;;http://courses.cs.washington.edu/courses/cse341/12au/racket/deriv.rkt
 ;; Unit tests.  See
 ;; http://docs.racket-lang.org/rackunit/quick-start.html
@@ -186,3 +181,6 @@
 (multiplicand '(* x y z)) ;'(* y z)
 (multiplicand equation1) ;'(* y (+ x 3))
 (deriv equation1 'x) ;'(+ (* x y) (* y (+ x 3)))
+|#
+
+(provide (all-defined-out))
