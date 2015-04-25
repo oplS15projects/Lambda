@@ -13,7 +13,7 @@
 (require racket/gui/base)
 (require plot)
 (require racket/include)
-;(require  "Images/images.rkt")
+(require  "Images/images.rkt")
 (include "Backend/Parser.rkt")
 
 ;A nice way to include /Import procedures
