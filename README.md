@@ -15,16 +15,16 @@ The goal is to have core mathematical engine that is simple , powerful and easy 
 *place some screenshots of initial ui, and inputs using eval/plot/deriv*
 
 ##Concepts Demonstrated
-* will need input from everyone here *
+*will need input from everyone here*
 - Backend High/Low level abstraction barriers - Josh
 - Main Parser keyword/equation extraction and fixing - Brian
 - GUI strategies - Norm
 - Functions - All
 
 ##External Technology and Libraries
-- Plot
-- GUI
-- Parser
+- Plot - http://docs.racket-lang.org/plot/
+- GUI - http://docs.racket-lang.org/gui/
+- Parser - http://docs.racket-lang.org/parser-tools/index.html?q=~a
 
 ##Favorite Lines of Code
 ####Brian
@@ -86,7 +86,7 @@ This procedure uses many helper functions, along with many `map` and `filter` ca
     
     ; Now input is separated into two lists:
     ; k-list has only keywords in it (no tags)
-    ; e-list has the full, un altered equation (with tags)
+    ; e-list has the full, unaltered equation (with tags)
     
     ;; --- Evaluate call to backend ---
     
@@ -110,7 +110,22 @@ This procedure uses many helper functions, along with many `map` and `filter` ca
 ####Josh
 
 ####Norman
+This procedure reads in a string from the `Input` field of the GUI, hands it over to the `main-parser` procedure that parses the expression. The evaluated result is then returned from the backend `evaluator` and placed into the `outputString`. The `outputString` is sent to the `Output` field of the GUI so the user can see the result. If the `plot` keyword is used the user can also see the plot on the canvas of the GUI.
 
+```
+;(init-value "Expression")
+      (callback (λ (input-field event)
+            (cond
+             ; If a user hits enter to compute an equation
+            ((equal? (send event get-event-type) 'text-field-enter) 
+             (begin
+             ; Clear canvas
+             (send pb erase)
+             ; Set outputString to solved equation
+             (set! outputString (main-parser (send input-field get-value)))
+             ; Send outputString to output-field
+            (send output-field set-value outputString))))))
+```
 
 ##Additional Remarks / Project Status
 - Working frontend GUI with input, output and plot canvas fields.
@@ -119,7 +134,7 @@ This procedure uses many helper functions, along with many `map` and `filter` ca
 - High and Low level abstracted backend that forms a dynamic database of key pairs for additional mathematical procedures based on keywords.
 - Evaluation of basic equations with any combination of the following operators: **-,+,/,\*,^**.
 - Plot of basic equations with any combination of the following operators: **-,+,/,\*,^** and variable **x**. 
-- Working keywords: eval, plot, deriv. *deriv currently only works with **+,\*,^**. and its output isn't formatted correctly*
+- Working keywords: eval, plot, deriv. *(deriv currently only works with **+,\*,^**. and its output isn't formatted correctly)*
 - Other planned keywords: simplify.
 
 #How to Download and Run
@@ -127,7 +142,7 @@ This procedure uses many helper functions, along with many `map` and `filter` ca
 1. Download the latest release from here: *release link*
 2. Open and run Lambda.rkt
 3. Input expression is typed into the `Input`, using syntax: `keyword equation`
-4. Output is seen in the `Ouput` or lower canvas depending on keywords used.
+4. Output is seen in the `Output` or lower canvas depending on keywords used.
 
 **Example 1:** `plot x+2*x+3` - support for only one variable **x** is currently available.
 
