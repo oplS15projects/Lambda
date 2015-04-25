@@ -55,13 +55,32 @@
 ;; something different the length=1 case and length is 2+ case. 
 (define (augend s)
  (apply make-sum (cddr s)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Divid::::::::::::::::::::::::::::::::::::::::::::::
+(define (make-div d1 . augend)
+  (cond ((= 0 (length augend )) d1 )
+        ((= 1 (length augend))
+         (let (( d2 (car augend )))
+           (cond ((=number? d1 0 ) d2)
+                 ((=number? d2 0 ) d1 ) 
+                 (( and (number? d1 )(number? d2 )) (/ d1 d2 ))
+                 ;(else (list d1 d2 '+  ))))) ;ok postfix out put two errors
+                 ;(else (list d1 '+ d2 ))))) ;ok infix out put
+                 (else (or(list '/ d1 d2 ) (list d1 '/ d2 ))))));ok Prefix output
+         (else 
+          (append (list '/ d1 ) augend ))))
 
-;(define (remove-same list)
-;  (if (null? list)
-;      list
-;      (if (variable? (car list))
-;          (cons (car list) (remove-same (filter (λ (x) (not(same-variable? x (car list)))) (cdr list))))
-;          (cons (car list) (remove-same (cdr list))))))
+(define (div? x)
+  (and (pair? x) (or(eq? (car x) '/) (eq? (cadr x) '/)))) ;ok
+
+(define (addend-div s) (or(cadr s) (car s ))) ;ok
+
+;; you're allowed to have augend also be a constructor
+;; you will need to test for the length of the augend, and do
+;; something different the length=1 case and length is 2+ case. 
+(define (augend-div s)
+ (apply make-div (cddr s)))
+
+;:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 ;; like make-sum, this should work with 1, 2, or 3+ args
 ;; and perform reductions on 1 and 2 arg cases
@@ -77,10 +96,7 @@
              (else 
               (append ( list '* m1 ) multiplicand ))))
 
-;(define (check-zero list)
-;  (if (> (accumulate (λ (x y) (if (eq? x 0) (+ 1 y) (+ 0 y)))0 list) 0)
-;      0
-;      list))
+
 
 (define (product? x) (and (pair? x) (eq? (car x) '*)))
 
@@ -112,6 +128,11 @@
 	((sum? exp)
 	 (make-sum (deriv (addend exp) var)
 		   (deriv (augend exp) var)))
+    ;;;;;;;;;;;;;;;;;;;;;;;;     ;,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+        ((div? exp)
+	 (make-div (deriv (addend-div exp) var)
+		   (deriv (augend-div exp) var)))
+    ;;;;;;;;;;;;;;;;;;;;;;;    ;,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 	((product? exp)
 	 (make-sum 
 	  (make-product (multiplier exp)
@@ -155,6 +176,11 @@
 ;;more test 
 (make-sum 'x 3) ; '(+ x 3)
 (sum? (make-sum 'x 3)) ;#t
+(make-div 9 3) ;3
+(make-div 9 'x) ; '(/ 9 x)
+(make-div 3 9) ; 1/3
+(addend-div (make-div 'x 3 )) ;'x
+(augend-div (make-div 'x 3 )) ;3
 (addend (make-sum 'x 3)) ; 'x
 (augend (make-sum 'x 3)) ;3
 (make-product 'x 3) ;'(* x 3)
