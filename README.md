@@ -1,31 +1,133 @@
-##Lambda
-###ShuddaWuddaCdr
+#Lambda
+##ShuddaWuddaCdr
 
-####Members:
-- Brian Carlson
-- Joshua Caravetta
-- Norman Mutunga
+##Authors
+- **Brian Carlson**
+- **Joshua Caravetta**
+- **Norman Mutunga**
 
 
-###Project Definition:
-The goal is to have a mathematical engine that is simple , powerful and easy to build upon. Simple in terms that it allows the user to enter their expression using english keywords with infix notation, and not needing to worrying about equation format. The power of the Lambda will come from the ease at which the mathematical engine backend can be expanded on to add new math functionality.
+##Overview
+The goal is to have core mathematical engine that is simple , powerful and easy to build upon. Simple in terms that it allows the user to enter their equation to evaluate in infix notation with english keywords to further define operations on the equation. The power of the Lambda will come from the ease at which the mathematical engine backend can be expanded on to add new math functionality.
 
-###Project Status:
+
+##Screenshots
+*place some screenshots of initial ui, and inputs using eval/plot/deriv*
+
+##Concepts Demonstrated
+* will need input from everyone here *
+- Backend High/Low level abstraction barriers - Josh
+- Main Parser keyword/equation extraction and fixing - Brian
+- GUI strategies - Norm
+- Functions - All
+
+##External Technology and Libraries
+- Plot
+- GUI
+- Parser
+
+##Favorite Lines of Code
+####Brian
+The `main-parser` procedure takes the complete english keyword and infix notation expression from the frontend GUI and breaks it up into a keyword list and equation string with the help of a lexical parser. It then ensures that the keyword list is not empty, if it is, then it inserts the `'eval` keyword in. It will then check to make sure proper notation/operators are used in the equation. Finally, the `main-parser` strips the lexical parser tags from the equation string and calls the backend `evaluator` with the keyword and the equation string. 
+
+This procedure uses many helper functions, along with many `map` and `filter` calls.
+
+```
+(define (main-parser in-exp) 
+  (let (
+        [exp (exp-lexer (open-input-string in-exp))] ; lex the in-exp and store it locally
+        [k-list '() ] ; list for keywords
+        [e-list '() ] ; list for expression
+        )
+    
+    ;; -- Helper Functions --
+    (define (is-keyword? item)
+      (and (equal? 'ID (car item)) ( > (string-length (symbol->string (car (cdr item)))) 1))
+      )
+    
+    (define (is-equation? item)
+      (or    (equal? 'OP (car item)) ; OP - operation
+             (equal? 'INT (car item)) ; INT - numbers
+             ;(equal? 'LPAR (car item)) ; LPAR - Left Paren
+             ;(equal? 'RPAR (car item)) ; RPAR - Right Paren
+             (and (equal? 'ID (car item)) ( = (string-length (symbol->string (car (cdr item)))) 1)) ; ID - variables
+             )
+      )
+    
+    (define (is-var? item)
+      (equal? 'ID (car item))
+      )
+    
+    (define (add-mult l1)
+      (define (iter in out)
+        (cond 
+          ((empty? (cdr in)) (append out (list (car in))))
+          ((and 
+            (equal? 'INT (car (car in))) 
+            (equal? 'ID (car (car (cdr in)))))  (iter (cdr in) (append out (list (car in)) (list (list 'OP  '*)))) )
+          (else (iter (cdr in) (append out (list (car in)))) )
+          )
+        )
+      
+      (iter l1 '())
+      )
+    
+    (define (rem-tags item)
+      (car (cdr item)) ; returns the symbol of the data 
+      )
+  
+    ; --- Parse in-exp ---
+    
+    ; Filter in-exp for keywords, append all keywords to k-list
+    (set! k-list (map rem-tags (filter is-keyword? exp)))
+    
+    ; Filter in-exp for equation, append equation to e-list
+    (set! e-list (add-mult (filter is-equation? exp)))
+    
+    ; Now input is separated into two lists:
+    ; k-list has only keywords in it (no tags)
+    ; e-list has the full, un altered equation (with tags)
+    
+    ;; --- Evaluate call to backend ---
+    
+    ; Here we are going to check if the user just wants to evaluate a generic, numbers only math equation
+    (cond
+      ((and (empty? k-list) (empty? (filter is-var? e-list))) (set! k-list (list 'eval)))
+      ((and (empty? k-list) (not (empty? (filter is-var? e-list)))) (set! k-list (list 'err)))
+      )
+    
+    ; Remove tags from e-list
+    (set! e-list (map rem-tags e-list))
+    
+    ; --- Call Backend with k-list and e-list ---
+    ; only calls with one keyword for now, passes e-list as string
+    (evaluate (car k-list) (lst-to-str e-list))
+    
+    )
+  )
+```
+
+####Josh
+
+####Norman
+
+
+##Additional Remarks / Project Status
 - Working frontend GUI with input, output and plot canvas fields.
 - Working general expression parser that handles initial keyword and equation parsing.
 - Working infix->prefix parser that handles transforming input equation to prefix for evaluation (handles operator precedence).
 - High and Low level abstracted backend that forms a dynamic database of key pairs for additional mathematical procedures based on keywords.
 - Evaluation of basic equations with any combination of the following operators: **-,+,/,\*,^**.
 - Plot of basic equations with any combination of the following operators: **-,+,/,\*,^** and variable **x**. 
+- Working keywords: eval, plot, deriv. *deriv currently only works with **+,\*,^**. and its output isn't formatted correctly*
+- Other planned keywords: simplify.
 
-- Working keywords: eval, plot
-- Planned keywords: simplify, derivative
+#How to Download and Run
 
-###How to use:
-
-1. Open and run Lambda.rkt
-2. Input expression is typed into the `Input`, using syntax: `keyword equation`
-3. Output is seen in the `Ouput` or lower canvas depending on keywords used.
+1. Download the latest release from here: *release link*
+2. Open and run Lambda.rkt
+3. Input expression is typed into the `Input`, using syntax: `keyword equation`
+4. Output is seen in the `Ouput` or lower canvas depending on keywords used.
 
 **Example 1:** `plot x+2*x+3` - support for only one variable **x** is currently available.
 
