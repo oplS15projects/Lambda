@@ -155,3 +155,7 @@ This will plot `x+2*x+3` in the lower canvas field
 **Example 2:** `eval 1+2*3^4` or `1+2*3^4` will both evaluate to: 163. `eval` is the default keyword if no keyword is entered.
 
 If `eval` is used on an equation with a variable, such as `x+2`, it will return `cannot evaluate: x+2` since there is a variable.
+
+**Example 3:** `deriv  2x*3 + 3x*10 ` The derivative is : 36 . `deriv` is the keyword to use to get a derivative. On the 
+other hand the `deriv` of `x + 2` is : 1 . 
+whic
