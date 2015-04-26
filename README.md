@@ -207,8 +207,7 @@ This procedure reads in a string from the `Input` field of the GUI, hands it ove
                                           ; Set outputString to solved equation
                                           (set! outputString (main-parser (send input-field get-value)))
                                           ; Send outputString to output-field
-                                          (send output-field set-value outputString)
-                                          )))))))
+                                          (send output-field set-value outputString))))))))
 ```
 
 ##Additional Remarks & Project Status
