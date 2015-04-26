@@ -42,8 +42,6 @@
                          ;(init-value "Expression")
                          ;this should return the current text of the editor
                          (callback (λ (input-field event)
-                                     ; (send input-window get-text) ;this should work ??                                      
-                                     ;(send frameG on-traverse-char #f)
                                      (cond
                                        ; If a user hits enter to compute an equation
                                        ((equal? (send event get-event-type) 'text-field-enter) 
@@ -52,17 +50,8 @@
                                           (send pb erase)
                                           ; Set outputString to solved equation
                                           (set! outputString (main-parser (send input-field get-value)))
-                                          ;(set! outputString (send input-field get-value))
                                           ; Send outputString to output-field
-                                          (send output-field set-value outputString)
-                                          ))
-                                       ;(else (display 2))
-                                       )
-                                     ;(send input-window erase)
-                                     ;(send event get-text)
-                                     
-                                     ))
-                         ))
+                                          (send output-field set-value outputString))))))))
 
 ;,,,,,,,,,,,,,,,,,,,Output Text Filed from Input,,,,,,,,,,,,,,,,,,,,
 (define output-field (new text-field%
