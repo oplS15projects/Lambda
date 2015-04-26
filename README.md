@@ -115,6 +115,25 @@ This procedure uses many helper functions, along with many `map` and `filter` ca
 
 ####Josh
 
+THe 'Key Pair object' is used to link keywords to their procedures. It allows users to add keywords to the system. The parser will update to include the added keywords automatically. This object paired with a few procedures that are then used with abstraction to give the user two procedures to call that alows them to interact with the object.
+
+```
+;Key pair object. 
+(define (key-pair keyword procedure)
+  (define (dispatch m)
+    (cond ((eq? m 'get-keyword) keyword)
+          ((eq? m 'get-procedure) procedure)))
+  dispatch)
+
+;Key pair getter for keyword.
+(define (get-keyword key-pair)
+  (key-pair 'get-keyword))
+
+;Key pair getter for Procedure.
+(define (get-procedure key-pair)
+  (key-pair 'get-procedure))
+```
+
 ####Norman
 This procedure reads in a string from the `Input` field of the GUI, hands it over to the `main-parser` procedure that parses the expression. The evaluated result is then returned from the backend `evaluator` and placed into the `outputString`. The `outputString` is sent to the `Output` field of the GUI so the user can see the result. If the `plot` keyword is used the user can also see the plot on the canvas of the GUI.
 
