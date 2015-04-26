@@ -158,4 +158,3 @@ If `eval` is used on an equation with a variable, such as `x+2`, it will return 
 
 **Example 3:** `deriv  2x*3 + 3x*10 ` The derivative is : 36 . `deriv` is the keyword to use to get a derivative. On the 
 other hand the `deriv` of `x + 2` is : 1 . 
-whic
