@@ -12,10 +12,25 @@ The goal is to create a core mathematical engine that is simple, powerful and ea
 
 
 ##Screenshots
-*Here are some screenshots of Lambda's initial UI, and inputs using keywords `'eval` ,`'plot` and `'deriv`*
+*Here are some screenshots of Lambda's GUI, and inputs using keywords `'eval` ,`'plot` and `'deriv`*
+
+**Lambda's GUI**
+
 <img src="Images/ui.png" alt="screenshot showing initial UI" width="700"/>
+
+
+**Input using `'eval`**
+
 <img src="Images/eval.png" alt="screenshot showing 'eval operation" width="700"/>
+
+
+**Input using `'plot`**
+
 <img src="Images/plot.png" alt="screenshot showing 'plot operation" width="700"/>
+
+
+**Input using `'deriv`**
+
 <img src="Images/deriv.png" alt="screenshot showing 'deriv operation" width="700"/>
 
 ##Concepts Demonstrated
@@ -24,8 +39,6 @@ The goal is to create a core mathematical engine that is simple, powerful and ea
 - **Lexical Parsing** - `exp-lexer` uses lexical parsing tools, along with regex to tag input data strings. `read-arith` uses regex to re-organize infix notation equations into prefix notation equations. Finally, the `main-parser` uses the power of the `exp-lexer` to extract keywords and format equations for evaluation in the backend.
 
 - **Key Procedures** - These procedures were added and constructed with ease to read in mind. Each procedure is placed in its own racket source file, and included into the `Keyword Definitions`. The calls to these procedures in their **KeyPair** definitions are simple and abstracted from the low level source code.
-
-- **GUI Strategies** - Norm
 
 ##External Technology and Libraries
 - **[Plot][1]** - This library was used to create plots in Lambda's GUI canvas with use of the `'plot` keyword.
@@ -187,15 +200,16 @@ This procedure reads in a string from the `Input` field of the GUI, hands it ove
             (send output-field set-value outputString))))))
 ```
 
-##Additional Remarks / Project Status
+##Additional Remarks & Project Status
 - Working frontend GUI with input, output and plot canvas fields.
 - Working general expression parser that handles initial keyword and equation parsing.
 - Working infix->prefix parser that handles transforming input equation to prefix for evaluation (handles operator precedence).
 - High and Low level abstracted backend that forms a dynamic database of key pairs for additional mathematical procedures based on keywords.
-- Evaluation of basic equations with any combination of the following operators: **-,+,/,\*,^**.
-- Plot of basic equations with any combination of the following operators: **-,+,/,\*,^** and variable **x**. 
-- Working keywords: eval, plot, deriv. *(deriv currently only works with **+,\*,^**. and its output isn't formatted correctly)*
-- Other planned keywords: simplify.
+- Working keywords: eval, plot, deriv, simplify. 
+..- `'eval` - evaluation of basic equations with any combination of the following operators: **-,+,/,\*,^**.
+..- `'plot` - makes a plot of basic equations with any combination of the following operators: **-,+,/,\*,^** and variable **x**. 
+..- `'deriv` - produces the derivative of a given equation. _currently only works with operators: **+,\*,^**, and its output for anything other than a number is "correct" but formatted in prefix (prints poorly)_
+..- `'simplify` - simplifies the given equation. _currently only works with operators: **+,\* ** and variable **x**._
 
 #How to Download and Run
 
