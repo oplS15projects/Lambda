@@ -148,13 +148,15 @@ This procedure reads in a string from the `Input` field of the GUI, hands it ove
 3. Input expression is typed into the `Input`, using syntax: `keyword equation`
 4. Output is seen in the `Output` or lower canvas depending on keywords used.
 
-**Example 1:** `plot x+2*x+3` - support for only one variable **x** is currently available.
+**Example 1: `eval`** 
+- `eval` is the default keyword if no keyword is entered.
+- `eval 1+2*3^4` or `1+2*3^4` will both evaluate to: 163.
+- If `eval` is used on an equation with a variable, such as `x+2`, it will return `cannot evaluate: x+2` since there is a variable.
 
-This will plot `x+2*x+3` in the lower canvas field
+**Example 2: `plot`** 
+- `plot x^2+x+3` - support for only one variable **x** is currently available.
+- This will plot `x+2*x+3` in the lower canvas field
 
-**Example 2:** `eval 1+2*3^4` or `1+2*3^4` will both evaluate to: 163. `eval` is the default keyword if no keyword is entered.
-
-If `eval` is used on an equation with a variable, such as `x+2`, it will return `cannot evaluate: x+2` since there is a variable.
-
-**Example 3:** `deriv  2x*3 + 3x*10 ` The derivative is : 36 . `deriv` is the keyword to use to get a derivative. On the 
-other hand the `deriv` of `x + 2` is : 1 . 
+**Example 3: `deriv`** 
+- `deriv  6*x + 30*x` will output 36 .
+- `deriv` of `x + 2` will output 1 . 
