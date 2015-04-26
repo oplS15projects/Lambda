@@ -8,27 +8,29 @@
 
 
 ##Overview
-The goal is to have core mathematical engine that is simple , powerful and easy to build upon. Simple in terms that it allows the user to enter their equation to evaluate in infix notation with english keywords to further define operations on the equation. The power of the Lambda will come from the ease at which the mathematical engine backend can be expanded on to add new math functionality.
+The goal is to create a core mathematical engine that is simple, powerful and easy to build upon. Simple in terms that it allows the user to enter their equation to evaluate in infix notation, along with english keywords to further define operations on the equation. The power of Lambda will come from the ease at which the mathematical engine backend can be expanded on to add new math functionality.
 
 
 ##Screenshots
-*place some screenshots of initial ui, and inputs using eval/plot/deriv*
-<img src="Images/ui.png" alt="screenshot showing initial ui" width="700"/>
-<img src="Images/eval.png" alt="screenshot showing initial ui" width="700"/>
-<img src="Images/plot.png" alt="screenshot showing initial ui" width="700"/>
-<img src="Images/deriv.png" alt="screenshot showing initial ui" width="700"/>
+*Here are some screenshots of Lambda's initial UI, and inputs using keywords `'eval` ,`'plot` and `'deriv`*
+<img src="Images/ui.png" alt="screenshot showing initial UI" width="700"/>
+<img src="Images/eval.png" alt="screenshot showing 'eval operation" width="700"/>
+<img src="Images/plot.png" alt="screenshot showing 'plot operation" width="700"/>
+<img src="Images/deriv.png" alt="screenshot showing 'deriv operation" width="700"/>
 
 ##Concepts Demonstrated
-*will need input from everyone here*
-- Backend High/Low level abstraction barriers - Josh
-- Main Parser keyword/equation extraction and fixing - Brian
-- GUI strategies - Norm
-- Functions - All
+- **Abstraction** - The backend uses a method of **KeyPairs** to create a database of keywords with a paired procedure. An abstraction barrier is made between the database and the user, so one can simply add a key and paired procedure to the database with `add-keyword`.
+
+- **Lexical Parsing** - `exp-lexer` uses lexical parsing tools, along with regex to tag input data strings. `read-arith` uses regex to re-organize infix notation equations into prefix notation equations. Finally, the `main-parser` uses the power of the `exp-lexer` to extract keywords and format equations for evaluation in the backend.
+
+- **Key Procedures** - These procedures were added and constructed with ease to read in mind. Each procedure is placed in its own racket source file, and included into the `Keyword Definitions`. The calls to these procedures in their **KeyPair** definitions are simple and abstracted from the low level source code.
+
+- **GUI Strategies** - Norm
 
 ##External Technology and Libraries
-- Plot - http://docs.racket-lang.org/plot/
-- GUI - http://docs.racket-lang.org/gui/
-- Parser - http://docs.racket-lang.org/parser-tools/index.html?q=~a
+- **[Plot][1]** - This library was used to create plots in Lambda's GUI canvas with use of the `'plot` keyword.
+- **[GUI][2]** - This library was used to create Lambda's GUI.
+- **[Parser][3]** - This library was used to create the `exp-lexer`, that extracts and tags all data types from the user input string.
 
 ##Favorite Lines of Code
 ####Brian
@@ -143,7 +145,7 @@ This procedure reads in a string from the `Input` field of the GUI, hands it ove
 
 #How to Download and Run
 
-1. Download the latest release from here: *release link*
+1. Download the latest release from here: *release link to come*
 2. Open and run Lambda.rkt
 3. Input expression is typed into the `Input`, using syntax: `keyword equation`
 4. Output is seen in the `Output` or lower canvas depending on keywords used.
@@ -160,3 +162,7 @@ This procedure reads in a string from the `Input` field of the GUI, hands it ove
 **Example 3: `deriv`** 
 - `deriv  6*x + 30*x` will output 36 .
 - `deriv` of `x + 2` will output 1 . 
+
+[1]: http://docs.racket-lang.org/plot/
+[2]: http://docs.racket-lang.org/gui/
+[3]: http://docs.racket-lang.org/parser-tools/index.html?q=~a
