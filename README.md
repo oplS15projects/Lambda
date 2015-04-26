@@ -14,9 +14,9 @@ The goal is to have core mathematical engine that is simple , powerful and easy 
 ##Screenshots
 *place some screenshots of initial ui, and inputs using eval/plot/deriv*
 ![screenshot showing initial ui](images/ui.png)
-![screenshot showing plot input](plot.png)
-![screenshot showing eval input](eval.png)
-![screenshot showing deriv input](deriv.png)
+![screenshot showing plot input](images/plot.png)
+![screenshot showing eval input](images/eval.png)
+![screenshot showing deriv input](images/deriv.png)
 
 ##Concepts Demonstrated
 *will need input from everyone here*
