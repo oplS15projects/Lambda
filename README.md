@@ -188,18 +188,27 @@ This scheme object uses helper functions, filter calls, and levels of abstractio
 This procedure reads in a string from the `Input` field of the GUI, hands it over to the `main-parser` procedure that parses the expression. The evaluated result is then returned from the backend `evaluator` and placed into the `outputString`. The `outputString` is sent to the `Output` field of the GUI so the user can see the result. If the `plot` keyword is used the user can also see the plot on the canvas of the GUI.
 
 ```
-;(init-value "Expression")
-      (callback (λ (input-field event)
-            (cond
-             ; If a user hits enter to compute an equation
-            ((equal? (send event get-event-type) 'text-field-enter) 
-             (begin
-             ; Clear canvas
-             (send pb erase)
-             ; Set outputString to solved equation
-             (set! outputString (main-parser (send input-field get-value)))
-             ; Send outputString to output-field
-            (send output-field set-value outputString))))))
+;,,,,,,,,,,,,,,,,,,,,,Input Test Field,,,,,,,,,,,,,,
+(define input-field (new text-field%
+                         (label "Input")
+                         [min-width 600]
+                         [min-height 30]
+                         [stretchable-width #f]
+                         (parent frameG)
+                         ;(init-value "Expression")
+                         ;this should return the current text of the editor
+                         (callback (λ (input-field event)
+                                      (cond
+                                       ; If a user hits enter to compute an equation
+                                       ((equal? (send event get-event-type) 'text-field-enter) 
+                                        (begin
+                                          ; Clear canvas
+                                          (send pb erase)
+                                          ; Set outputString to solved equation
+                                          (set! outputString (main-parser (send input-field get-value)))
+                                          ; Send outputString to output-field
+                                          (send output-field set-value outputString)
+                                          )))))))
 ```
 
 ##Additional Remarks & Project Status
