@@ -115,8 +115,9 @@ This procedure uses many helper functions, along with many `map` and `filter` ca
 
 ####Josh
 
-THe `key-pair` is used to link keywords to their procedures. It allows users to add keywords to the system. The parser will update to include the added keywords automatically. This object paired with a few procedures that are then used with abstraction to give the user two procedures to call that alows them to interact with the object.
+The `key-pair` is used to link keywords to their procedures. It allows users to add keywords to the system. The parser will update to include the added keywords automatically. This object paired with a few procedures that are then used with abstraction to give the user two procedures to call that alows them to interact with the object.
 
+This scheme object uses helper functions, filter calls, and levels of abstraction to achieve its goals. 
 ```
 ;Key pair object. 
 (define (key-pair keyword procedure)
@@ -166,7 +167,6 @@ THe `key-pair` is used to link keywords to their procedures. It allows users to 
 (define (get-definition keyword)
   (get-procedure (car (find-key-pair keyword))))
 
-(include "../Procedures/KeywordDefinitions.rkt")
 ```
 
 ####Norman
