@@ -38,7 +38,9 @@ The goal is to create a core mathematical engine that is simple, powerful and ea
 
 - **Lexical Parsing** - `exp-lexer` uses lexical parsing tools, along with regex to tag input data strings. `read-arith` uses regex to re-organize infix notation equations into prefix notation equations. Finally, the `main-parser` uses the power of the `exp-lexer` to extract keywords and format equations for evaluation in the backend.
 
-- **Key Procedures** - These procedures were added and constructed with ease to read in mind. Each procedure is placed in its own racket source file, and included into the `Keyword Definitions`. The calls to these procedures in their **KeyPair** definitions are simple and abstracted from the low level source code.
+- **Key Procedures** - These procedures were added and constructed with ease to read in mind. Each procedure is placed in its own racket source file, and included into the `Keyword Definitions`. The calls to these procedures in their **KeyPair** definitions are simple and abstracted from the low level source code. 
+
+- **GUI Strategies** - The windowing toolbox is used to provide the basic building block for the `frame` which is a top level window  ,`textfields` ,`editor-canvas` and `pasteboard` are all defined in the `frame` which is the parent. On this platform the  `Input textfield` takes in expressions and hands them over to the abstracted `main-parser` in the backend. The solution is sent to the  `Output textfield` if its just an `eval` or `deriv`  while `plot` has an added output which is plotted on to the canvas for a visual effect.
 
 ##External Technology and Libraries
 - **[Plot][1]** - This library was used to create plots in Lambda's GUI canvas with use of the `plot` keyword.
