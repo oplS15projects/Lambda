@@ -214,6 +214,8 @@
       ((and (empty? k-list) (empty? (filter is-var? e-list))) (set! k-list (list 'eval)))
       ; If k-list is empty and IDs (variables) in equation, append err and tell backend to return expression (cannot eval with variables)
       ((and (empty? k-list) (not (empty? (filter is-var? e-list)))) (set! k-list (list 'err)))
+      ; If k-list is eval and IDs (variables) in equation, append err and tell backend to return expression (cannot eval with variables)
+      ((and (equal? 'eval (car k-list)) (not (empty? (filter is-var? e-list)))) (set! k-list (list 'err)))
       )
     
     ; Remove tags from e-list
