@@ -5,6 +5,7 @@
 ;; Don't remove the equation1 definition.
 (define equation1 '(* x y (+ x 3)))  ; i.e., ((x^2)y + 3xy) dx
 
+
 (define (variable? x) (symbol? x))
 
 (define (same-variable? v1 v2)
@@ -41,8 +42,8 @@
                  ;(else (list a1 a2 '+  ))))) ;ok postfix out put two errors
                  ;(else (list a1 '+ a2 ))))) ;ok infix out put
                  (else (or(list '+ a1 a2 ) (list a1 '+ a2 ))))));ok Prefix output
-        (else 
-         (append (list '+ a1 ) augend ))))
+         (else 
+          (append (list '+ a1 ) augend ))))
 
 (define (sum? x)
   (and (pair? x) (or(eq? (car x) '+) (eq? (cadr x) '+)))) ;ok
@@ -53,7 +54,7 @@
 ;; you will need to test for the length of the augend, and do
 ;; something different the length=1 case and length is 2+ case. 
 (define (augend s)
-  (apply make-sum (cddr s)))
+ (apply make-sum (cddr s)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Divid::::::::::::::::::::::::::::::::::::::::::::::
 (define (make-div d1 . augend)
   (cond ((= 0 (length augend )) d1 )
@@ -65,8 +66,8 @@
                  ;(else (list d1 d2 '+  ))))) ;ok postfix out put two errors
                  ;(else (list d1 '+ d2 ))))) ;ok infix out put
                  (else (or(list '/ d1 d2 ) (list d1 '/ d2 ))))));ok Prefix output
-        (else 
-         (append (list '/ d1 ) augend ))))
+         (else 
+          (append (list '/ d1 ) augend ))))
 
 (define (div? x)
   (and (pair? x) (or(eq? (car x) '/) (eq? (cadr x) '/)))) ;ok
@@ -77,23 +78,23 @@
 ;; you will need to test for the length of the augend, and do
 ;; something different the length=1 case and length is 2+ case. 
 (define (augend-div s)
-  (apply make-div (cddr s)))
+ (apply make-div (cddr s)))
 
 ;:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 ;; like make-sum, this should work with 1, 2, or 3+ args
 ;; and perform reductions on 1 and 2 arg cases
 (define (make-product m1 . multiplicand)
-  (cond ((= 0 (length multiplicand)) m1)
-        ((= 1 (length multiplicand))
-         (let ((m2 (car multiplicand )))
-           (cond ((or (=number? m1 0 ) (=number? m2 0 )) 0 )
-                 ((=number? m1 1 ) m2 )
-                 ((=number? m2 1 ) m1 )
-                 ((and (number? m1 ) (number? m2 )) (* m1 m2 ))
-                 (else (or(list '* m1 m2 ) (list m1 '* m2 ))))))
-        (else 
-         (append ( list '* m1 ) multiplicand ))))
+   (cond ((= 0 (length multiplicand)) m1)
+             ((= 1 (length multiplicand))
+              (let ((m2 (car multiplicand )))
+                (cond ((or (=number? m1 0 ) (=number? m2 0 )) 0 )
+                      ((=number? m1 1 ) m2 )
+                      ((=number? m2 1 ) m1 )
+                      ((and (number? m1 ) (number? m2 )) (* m1 m2 ))
+                      (else (or(list '* m1 m2 ) (list m1 '* m2 ))))))
+             (else 
+              (append ( list '* m1 ) multiplicand ))))
 
 
 
@@ -108,8 +109,8 @@
 ;;; differentiation for exponents
 (define (make-exponentiation x y)
   (cond ((= y 0) 1)
-        ((= y 1) x)
-        (else (list '** x y))))
+	((= y 1) x)
+	(else (list '** x y))))
 
 (define (exponentiation? x)
   (and (pair? x) (eq? (car x) '**)))
@@ -122,53 +123,29 @@
 
 (define (deriv exp var)
   (cond ((number? exp) 0)
-        ((variable? exp)
-         (if (same-variable? exp var) 1 0))
-        ((sum? exp)
-         (make-sum (deriv (addend exp) var)
-                   (deriv (augend exp) var)))
-        ;;;;;;;;;;;;;;;;;;;;;;;;     ;,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+	((variable? exp)
+	 (if (same-variable? exp var) 1 0))
+	((sum? exp)
+	 (make-sum (deriv (addend exp) var)
+		   (deriv (augend exp) var)))
+    ;;;;;;;;;;;;;;;;;;;;;;;;     ;,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
         ((div? exp)
-         (make-div (deriv (addend-div exp) var)
-                   (deriv (augend-div exp) var)))
-        ;;;;;;;;;;;;;;;;;;;;;;;    ;,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-        ((product? exp)
-         (make-sum 
-          (make-product (multiplier exp)
-                        (deriv (multiplicand exp) var))
-          (make-product (deriv (multiplier exp) var)
-                        (multiplicand exp))))
-        ((exponentiation? exp)
-         (make-product (exponent exp)
-                       (make-product (make-exponentiation (base exp) 
-                                                          (- (exponent exp) 1))
-                                     (deriv (base exp) var))))
-        (else
-         (error "unknown expression type -- DERIV" exp))))
-
-
-;(define test (deriv  '(+ (* x x) (* x x)) 'x))
-;; String Pretty Print for Deriv output
-(define (deriv-print l1)
-  
-  ; Helper - adjusted from parser
-  (define (fix-emb-list item)
-    
-    (if (list? item)
-        ; If list contains another list, go in and fix it
-        (string-append* "" (append (list "(") (map fix-emb-list item) (list ")")))
-        ; else convert the symbol to a string
-        (cond
-          ((number? item) (string-append (number->string item) " "))
-          ((symbol? item) (string-append (symbol->string item) " "))
-          )
-        )
-    ) 
-  
-  (string-append (string-append* "(" (map fix-emb-list l1)) ")" )
-  
-  )
-
+	 (make-div (deriv (addend-div exp) var)
+		   (deriv (augend-div exp) var)))
+    ;;;;;;;;;;;;;;;;;;;;;;;    ;,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+	((product? exp)
+	 (make-sum 
+	  (make-product (multiplier exp)
+			(deriv (multiplicand exp) var))
+	  (make-product (deriv (multiplier exp) var)
+			(multiplicand exp))))
+	((exponentiation? exp)
+	 (make-product (exponent exp)
+		       (make-product (make-exponentiation (base exp) 
+							  (- (exponent exp) 1))
+				     (deriv (base exp) var))))
+	(else
+	 (error "unknown expression type -- DERIV" exp))))
 
 #| Tests for Deriv
 

@@ -1,3 +1,5 @@
+
+
 (define operator-list '(* + -))
 
 (define (operator? x)
@@ -78,7 +80,7 @@
            [(list ?n '+ ?m 'x '- ?s) (list ?m 'x '+ (- ?n ?s))]
            [(list ?n '+ ?s '- ?m 'x) (list (+ ?n ?s) '- ?m 'x)]
            [(list 'x '+ ?n '- 'x) (list ?n)]
-           ;[(list 'x '+ 'x '- '?n) (list 2 'x '- ?n)]
+           [(list 'x '+ 'x '- '?n) (list 2 'x '- ?n)]
            [(list ?s 'x '+ ?n '- 'x) (list (- ?s 1) 'x '+ ?n)]
            [(list 'x '+ ?n '- ?s 'x) (list (- ?s 1) 'x '+ ?n)]
            [(list ?n '+ ?s 'x '- 'x) (list (- ?s 1) 'x '+ ?n)]
