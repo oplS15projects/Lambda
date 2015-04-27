@@ -223,7 +223,7 @@ This procedure reads in a string from the `Input` field of the GUI, hands it ove
 
 #How to Download and Run
 
-1. Download the latest release from here: *release link to come*
+1. Download the latest release from here: [Release v3.0][4]
 2. Open and run Lambda.rkt
 3. Input expression is typed into the `Input`, using syntax: `keyword equation`
 4. Output is seen in the `Output` or lower canvas depending on keywords used.
@@ -244,3 +244,5 @@ This procedure reads in a string from the `Input` field of the GUI, hands it ove
 [1]: http://docs.racket-lang.org/plot/
 [2]: http://docs.racket-lang.org/gui/
 [3]: http://docs.racket-lang.org/parser-tools/index.html?q=~a
+[4]: https://github.com/oplS15projects/Lambda/releases/tag/3.0
+
