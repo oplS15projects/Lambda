@@ -1,19 +1,11 @@
 
 
-(define (variable? x) (symbol? x))
-
 (define operator-list '(* + -))
 
 (define (operator? x)
   (if (null? (filter (lambda (y) (eq? y x)) operator-list))
       #f
       #t))
-
-(define (same-variable? v1 v2)
-  (and (variable? v1) (variable? v2) (eq? v1 v2)))
-
-(define (=number? exp num)
-  (and (number? exp) (= exp num)))
 
 (define (accumulate op initial sequence)
  (if (null? sequence)
