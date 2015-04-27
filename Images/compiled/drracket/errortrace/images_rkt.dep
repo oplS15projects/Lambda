@@ -1,0 +1,1 @@
+("6.1.1" ("7313c480e70c185aae6583d4e8209933013f6543" . "661d12f498fb8ec9cf483b502a8972e7f6387d57") (collects #"images" #"logos.rkt") (collects #"racket" #"main.rkt") (collects #"racket" #"runtime-config.rkt") (collects #"images" #"compile-time.rkt"))

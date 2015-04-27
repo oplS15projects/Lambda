@@ -1,6 +1,6 @@
 #lang racket
 
-; OPL Final Project - Lambda (λ
+; OPL Final Project - Lambda (λ)
 
 ; Date: 4/21/15
 
@@ -12,7 +12,9 @@
 
 (require racket/gui/base)
 (require plot)
-(include "Parser.rkt")
+(require racket/include)
+(require  "Images/images.rkt")
+(include "Backend/Parser.rkt")
 
 ;A nice way to include /Import procedures
 ;(require rackunit
@@ -33,37 +35,30 @@
 ;,,,,,,,,,,,,,,,,,,,,,Input Test Field,,,,,,,,,,,,,,
 (define input-field (new text-field%
                          (label "Input")
-                         ;[min-width 50]
-                         ;(horiz-margin 0)
+                         [min-width 600]
                          [min-height 30]
+                         [stretchable-width #f]
                          (parent frameG)
                          ;(init-value "Expression")
                          ;this should return the current text of the editor
                          (callback (λ (input-field event)
-                                     ; (send input-window get-text) ;this should work ??                                      
-                                     ;(send frameG on-traverse-char #f)
                                      (cond
                                        ; If a user hits enter to compute an equation
                                        ((equal? (send event get-event-type) 'text-field-enter) 
                                         (begin
+                                          ; Clear canvas
+                                          (send pb erase)
                                           ; Set outputString to solved equation
                                           (set! outputString (main-parser (send input-field get-value)))
-                                          ;(set! outputString (send input-field get-value))
                                           ; Send outputString to output-field
-                                          (send output-field set-value outputString)
-                                          ))
-                                       ;(else (display 2))
-                                       )
-                                     ;(send input-window erase)
-                                     ;(send event get-text)
-                                     
-                                     ))
-                         ))
+                                          (send output-field set-value outputString))))))))
 
 ;,,,,,,,,,,,,,,,,,,,Output Text Filed from Input,,,,,,,,,,,,,,,,,,,,
 (define output-field (new text-field%
                           [label "Output"]
+                          [min-width 600]
                           [min-height 30]
+                          [stretchable-width #f]
                           (parent frameG)
                           (callback (λ (output-field event)
                                       (cond
@@ -83,8 +78,11 @@
 
 (define graph-display (new editor-canvas% 
                            [parent frameG]
-                           [min-width 400]
-                           [min-height 500]))
+                           [min-width 900]
+                           [min-height 500]
+                           [stretchable-width #f]
+                           [stretchable-height #f]
+                           [style '(transparent auto-hscroll auto-vscroll)]))
 
 (define pb (new pasteboard%))
 (send graph-display set-editor pb) 
@@ -96,13 +94,14 @@
                         (alignment '(center center))))
 
 
-;;,,,,,,,,,,,,,,,,,,,,,Horizontal Panel,,,,,,,,,,,,,,,,,,,,,,,,
-;(define main-panel (new horizontal-panel% 
-;                        (parent frameG)
-;                        (border 0)
-;                        (alignment '(center center))))
+;,,,,,,,,,,,,,,,,,,,,,,,,,,,,,GoatLambda borrowed logo on REP.
+;http://docs.racket-lang.org/images/Embedding_Bitmaps_in_Compiled_Files.html?q=images
 
-
-
-;; Show Lambda,,,,,,,,
+the-logo
+(display "We Goat-Lambda 
+;Norman Mutunga
+;Brian Carlson
+;Joshua Caravetta
+;OPL Final Project © 2015")
+;;Run Goat Lambda,,,,,,,,
 (send frameG show #t)
