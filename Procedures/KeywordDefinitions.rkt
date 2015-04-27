@@ -1,5 +1,5 @@
 (include "Derivative.rkt")
-;(include "Simplify.rkt")
+(include "Simplify.rkt")
 
 (define-namespace-anchor anch)
 (define ns (namespace-anchor->namespace anch))
@@ -12,7 +12,7 @@
             list-of-stuff))
 
 (add-keyword 'simplify (lambda (x)
-                         (display-message (list "simplify" (infix->prefix x)))))
+                         (simplify x)))
 
 (add-keyword 'eval (lambda (x)
                      (string-append "evaluated to: " (number->string (eval `(let ([^ expt]), (infix->prefix x)) ns)))))
