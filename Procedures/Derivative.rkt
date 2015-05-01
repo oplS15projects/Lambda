@@ -1,5 +1,5 @@
 ;; Code for Prefix Derivative function of Lambda
-
+;; Used code provided in the Hw assignment
 ;; Exercise 2.57 on pp. 151 of SICP, the differentiator.
 
 ;; Don't remove the equation1 definition.
