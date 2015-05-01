@@ -215,11 +215,11 @@ This procedure reads in a string from the `Input` field of the GUI, hands it ove
 - Working general expression parser that handles initial keyword and equation parsing.
 - Working infix->prefix parser that handles transforming input equation to prefix for evaluation (handles operator precedence).
 - High and Low level abstracted backend that forms a dynamic database of key pairs for additional mathematical procedures based on keywords.
-* Working keywords: `eval`, `plot`, `deriv`, `simplify`. 
+* Working keywords: `eval`, `plot`, `deriv`, `simplify`. _all procedures on work with variable **x**._
   - `eval` - evaluation of basic equations with any combination of the following operators: **-,+,/,\*,^**.
-  - `plot` - makes a plot of basic equations with any combination of the following operators: **-,+,/,\*,^** and variable **x**. 
-  - `deriv` - produces the derivative of a given equation. _currently only works with operators: **+,\*,^** and its output for anything other than a number is "correct" but formatted in prefix (prints poorly)_
-  - `simplify` - simplifies the given equation. _currently only works with operators: **+,*** and variable **x**._
+  - `plot` - makes a plot of basic equations with any combination of the following operators: **-,+,/,\*,^**. 
+  - `deriv` - produces the derivative of a given equation. _currently only works with operators: **+,\*,^**._
+  - `simplify` - simplifies the given equation. _currently only works with operators: **+,***._
 
 #How to Download and Run
 
@@ -234,7 +234,7 @@ This procedure reads in a string from the `Input` field of the GUI, hands it ove
 - If `eval` is used on an equation with a variable, such as `x+2`, it will return `cannot evaluate: x+2` since there is a variable.
 
 **Example 2: `plot`** 
-- `plot x^2+x+3` - support for only one variable **x** is currently available.
+- `plot x^2+x+3`
 - This will plot `x+2*x+3` in the lower canvas field
 
 **Example 3: `deriv`** 

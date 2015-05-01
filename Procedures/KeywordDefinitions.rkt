@@ -40,6 +40,6 @@
 (add-keyword 'deriv (lambda (x)
                       (string-append "derivative: " (if (number? (deriv (infix->prefix x) 'x))
                                                         (number->string (deriv (infix->prefix x) 'x))
-                                                        (lst-to-str (deriv (infix->prefix x) 'x))
+                                                        (deriv-print (deriv (infix->prefix x) 'x))
                                                         ))
                       ))

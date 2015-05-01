@@ -98,10 +98,11 @@
 ;http://docs.racket-lang.org/images/Embedding_Bitmaps_in_Compiled_Files.html?q=images
 
 the-logo
-(display "We Goat-Lambda 
+(display "Lambda 
 ;Norman Mutunga
 ;Brian Carlson
 ;Joshua Caravetta
 ;OPL Final Project © 2015")
-;;Run Goat Lambda,,,,,,,,
+
+;; Show Lambda GUI
 (send frameG show #t)
